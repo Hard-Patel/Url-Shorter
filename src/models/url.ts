@@ -7,11 +7,18 @@ export const shortenUrl = async (url: string, response: Response) => {
   try {
     const shortUrlPresent = await prismaClient.url.findFirst({
       where: {
-        shortUrl: url,
+        OR: [
+          {
+            shortUrl: url,
+          },
+          {
+            originalUrl: url,
+          },
+        ],
       },
     });
 
-    if (shortUrlPresent?.originalUrl) {
+    if (Boolean(shortUrlPresent?.originalUrl)) {
       response.send({
         message: "Url already shortend!",
         data: shortUrlPresent,
