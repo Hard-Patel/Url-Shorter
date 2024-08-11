@@ -5,11 +5,12 @@ import { nanoid } from "nanoid";
 
 export const shortenUrl = async (url: string, response: Response) => {
   try {
+    const shortedUrl = url?.split("/").pop();
     const shortUrlPresent = await prismaClient.url.findFirst({
       where: {
         OR: [
           {
-            shortUrl: url,
+            shortUrl: url?.includes("/") ? shortedUrl : "",
           },
           {
             originalUrl: url,
